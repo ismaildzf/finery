@@ -1,11 +1,11 @@
 package net.developer.finery.ability;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributeModifier.Operation;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Worn cosmetics that raise a real statistic instead of showing a status effect.
@@ -18,11 +18,11 @@ public final class CosmeticStats {
     }
 
     public static void setMaxHealth(LivingEntity entity, String key, boolean on, double amount) {
-        if (!(entity instanceof PlayerEntity player)) {
+        if (!(entity instanceof Player player)) {
             return;
         }
         //? if <1.21 {
-        /*EntityAttributeInstance instance = player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
+        AttributeInstance instance = player.getAttribute(Attributes.MAX_HEALTH);
         if (instance == null) {
             return;
         }
@@ -30,17 +30,17 @@ public final class CosmeticStats {
                 ("finery:" + key).getBytes(java.nio.charset.StandardCharsets.UTF_8));
         if (on) {
             if (instance.getModifier(id) == null) {
-                instance.addPersistentModifier(new EntityAttributeModifier(id, "finery:" + key, amount, Operation.ADDITION));
+                instance.addPermanentModifier(new AttributeModifier(id, "finery:" + key, amount, Operation.ADDITION));
             }
         } else if (instance.getModifier(id) != null) {
             instance.removeModifier(id);
         }
-        *///?} else {
-        EntityAttributeInstance instance = player.getAttributeInstance(healthAttribute());
+        //?} else {
+        /*EntityAttributeInstance instance = player.getAttributeInstance(healthAttribute());
         if (instance == null) {
             return;
         }
-        net.minecraft.util.Identifier id = net.minecraft.util.Identifier.of("finery", key);
+        net.minecraft.resources.ResourceLocation id = net.minecraft.resources.ResourceLocation.of("finery", key);
         if (on) {
             if (instance.getModifier(id) == null) {
                 instance.addPersistentModifier(new EntityAttributeModifier(id, amount, Operation.ADD_VALUE));
@@ -48,21 +48,21 @@ public final class CosmeticStats {
         } else if (instance.getModifier(id) != null) {
             instance.removeModifier(id);
         }
-        //?}
+        *///?}
     }
 
-    public static void clearWornBonuses(PlayerEntity player) {
+    public static void clearWornBonuses(Player player) {
         setMaxHealth(player, "crown_health", false, 0.0D);
         setMaxHealth(player, "locket_health", false, 0.0D);
     }
 
     //? if >=1.21 {
-    private static net.minecraft.registry.entry.RegistryEntry<net.minecraft.entity.attribute.EntityAttribute> healthAttribute() {
+    /*private static net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> healthAttribute() {
         //? if <1.21.2 {
-        /*return EntityAttributes.GENERIC_MAX_HEALTH;
-        *///?} else {
         return EntityAttributes.MAX_HEALTH;
-        //?}
+        //?} else {
+        /^return EntityAttributes.MAX_HEALTH;
+        ^///?}
     }
-    //?}
+    *///?}
 }

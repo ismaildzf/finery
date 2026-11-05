@@ -1,7 +1,6 @@
 package net.developer.finery.registry;
 
 import net.developer.finery.Finery;
-import net.developer.finery.item.CosmeticDye;
 import net.developer.finery.ability.CapeAbility;
 import net.developer.finery.ability.HeadAbility;
 import net.developer.finery.ability.NeckAbility;
@@ -13,196 +12,202 @@ import net.developer.finery.item.DyeableNeckItem;
 import net.developer.finery.item.HeadItem;
 import net.developer.finery.item.NeckItem;
 import net.developer.finery.item.WingItem;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Central item registry for Finery.
- *
- * Two families of capes:
- *  - Craftable (crimson/azure/emerald/void): shaped recipes under data/finery/recipe
- *  - Loot-only (warden/dragon/pirate/pharaoh/totem/enchanter/breeze/wither):
- *    injected into themed vanilla chests by {@link ModLoot}
- */
-public class ModItems {
+/** NeoForge item registry. Static fields are bound after registration in common setup. */
+public final class ModItems {
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Finery.MOD_ID);
+    public static final DeferredRegister<CreativeModeTab> TABS =
+            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Finery.MOD_ID);
 
-    // ── Craftable capes (RPG "uncommon" starter tier) ───────────────────
-    public static final CapeItem CRIMSON_CAPE = register("crimson_cape", "crimson",
-            CapeAbility.FLAME_WARD, CapeRarity.UNCOMMON, "item.finery.hint.craft");
-    public static final CapeItem AZURE_CAPE = register("azure_cape", "azure",
-            CapeAbility.TIDES_GRACE, CapeRarity.UNCOMMON, "item.finery.hint.craft");
-    public static final CapeItem EMERALD_CAPE = register("emerald_cape", "emerald",
-            CapeAbility.MERCHANT_CHARM, CapeRarity.EPIC, "item.finery.hint.loot_village");
-    public static final CapeItem VOID_CAPE = register("void_cape", "void",
-            CapeAbility.VOIDSTEP, CapeRarity.UNCOMMON, "item.finery.hint.craft");
+    public static CapeItem CRIMSON_CAPE;
+    private static final RegistryObject<CapeItem> CRIMSON_CAPE_H = register("crimson_cape", "crimson", CapeAbility.FLAME_WARD, CapeRarity.UNCOMMON, "item.finery.hint.craft");
+    public static CapeItem AZURE_CAPE;
+    private static final RegistryObject<CapeItem> AZURE_CAPE_H = register("azure_cape", "azure", CapeAbility.TIDES_GRACE, CapeRarity.UNCOMMON, "item.finery.hint.craft");
+    public static CapeItem EMERALD_CAPE;
+    private static final RegistryObject<CapeItem> EMERALD_CAPE_H = register("emerald_cape", "emerald", CapeAbility.MERCHANT_CHARM, CapeRarity.EPIC, "item.finery.hint.loot_village");
+    public static CapeItem VOID_CAPE;
+    private static final RegistryObject<CapeItem> VOID_CAPE_H = register("void_cape", "void", CapeAbility.VOIDSTEP, CapeRarity.UNCOMMON, "item.finery.hint.craft");
+    public static CapeItem WARDEN_CAPE;
+    private static final RegistryObject<CapeItem> WARDEN_CAPE_H = register("warden_cape", "warden", CapeAbility.SCULK_VEIL, CapeRarity.LEGENDARY, "item.finery.hint.loot_ancient_city");
+    public static CapeItem DRAGON_CAPE;
+    private static final RegistryObject<CapeItem> DRAGON_CAPE_H = register("dragon_cape", "dragon", CapeAbility.DRACONIC_GRACE, CapeRarity.LEGENDARY, "item.finery.hint.loot_end_city");
+    public static CapeItem PIRATE_CAPE;
+    private static final RegistryObject<CapeItem> PIRATE_CAPE_H = register("pirate_cape", "pirate", CapeAbility.SEA_LEGS, CapeRarity.EPIC, "item.finery.hint.loot_shipwreck");
+    public static CapeItem PHARAOH_CAPE;
+    private static final RegistryObject<CapeItem> PHARAOH_CAPE_H = register("pharaoh_cape", "pharaoh", CapeAbility.DESERT_STRIDE, CapeRarity.EPIC, "item.finery.hint.loot_desert_pyramid");
+    public static CapeItem TOTEM_CAPE;
+    private static final RegistryObject<CapeItem> TOTEM_CAPE_H = register("totem_cape", "totem", CapeAbility.LAST_STAND, CapeRarity.EPIC, "item.finery.hint.loot_woodland_mansion");
+    public static CapeItem ENCHANTER_CAPE;
+    private static final RegistryObject<CapeItem> ENCHANTER_CAPE_H = register("enchanter_cape", "enchanter", CapeAbility.ARCANE_INSIGHT, CapeRarity.EPIC, "item.finery.hint.loot_stronghold");
+    public static CapeItem BREEZE_CAPE;
+    private static final RegistryObject<CapeItem> BREEZE_CAPE_H = register("breeze_cape", "breeze", CapeAbility.WINDBORNE, CapeRarity.EPIC, "item.finery.hint.loot_trial_chambers");
+    public static CapeItem WITHER_CAPE;
+    private static final RegistryObject<CapeItem> WITHER_CAPE_H = register("wither_cape", "wither", CapeAbility.UNDYING_EMBER, CapeRarity.EPIC, "item.finery.hint.loot_nether_fortress");
+    public static HeadItem WIZARD_HAT;
+    private static final RegistryObject<HeadItem> WIZARD_HAT_H = registerHead("wizard_hat", "wizard_hat", "hat", HeadAbility.FORTUNE, CapeRarity.UNCOMMON, "item.finery.hint.craft");
+    public static HeadItem HEADBAND;
+    private static final RegistryObject<HeadItem> HEADBAND_H = registerHead("headband", "headband", "hat", HeadAbility.REFLEX, CapeRarity.UNCOMMON, "item.finery.hint.craft");
+    public static HeadItem EYE_PATCH;
+    private static final RegistryObject<HeadItem> EYE_PATCH_H = registerHead("eye_patch", "eye_patch", "face", HeadAbility.STEADY_GAZE, CapeRarity.UNCOMMON, "item.finery.hint.craft");
+    public static HeadItem CROWN;
+    private static final RegistryObject<HeadItem> CROWN_H = registerHead("crown", "crown", "hat", HeadAbility.VITALITY, CapeRarity.EPIC, "item.finery.hint.loot_woodland_mansion");
+    public static HeadItem DRAGON_HORNS;
+    private static final RegistryObject<HeadItem> DRAGON_HORNS_H = registerHead("dragon_horns", "dragon_horns", "hat", HeadAbility.DIVE_FURY, CapeRarity.LEGENDARY, "item.finery.hint.loot_end_city");
+    public static HeadItem RAM_HORNS;
+    private static final RegistryObject<HeadItem> RAM_HORNS_H = registerHead("ram_horns", "ram_horns", "hat", HeadAbility.GORE_CHARGE, CapeRarity.LEGENDARY, "item.finery.hint.loot_bastion");
+    public static HeadItem DEMON_HORN;
+    private static final RegistryObject<HeadItem> DEMON_HORN_H = registerHead("demon_horn", "demon_horn", "hat", HeadAbility.HELLFIRE, CapeRarity.EPIC, "item.finery.hint.loot_nether_fortress");
+    public static HeadItem IMP_HORNS;
+    private static final RegistryObject<HeadItem> IMP_HORNS_H = registerHead("imp_horns", "imp_horns", "hat", HeadAbility.IMP_VIGOR, CapeRarity.UNCOMMON, "item.finery.hint.craft");
+    public static HeadItem EYE_WRAP;
+    private static final RegistryObject<HeadItem> EYE_WRAP_H = registerDyeableHead("eye_wrap", "eye_wrap", "face", HeadAbility.SHADOW_SIGHT, CapeRarity.UNCOMMON, "item.finery.hint.craft", 0);
+    public static NeckItem SCARF;
+    private static final RegistryObject<NeckItem> SCARF_H = registerDyeableNeck("scarf", "scarf", NeckAbility.WARMTH, CapeRarity.UNCOMMON, "item.finery.hint.craft", 0);
+    public static NeckItem ROYAL_SCARF;
+    private static final RegistryObject<NeckItem> ROYAL_SCARF_H = registerNeck("royal_scarf", "royal_scarf", NeckAbility.WARMTH, CapeRarity.EPIC, "item.finery.hint.craft");
+    public static NeckItem CORAL_AMULET;
+    private static final RegistryObject<NeckItem> CORAL_AMULET_H = registerNeck("coral_amulet", "coral_amulet", NeckAbility.CORAL_CONDUIT, CapeRarity.EPIC, "item.finery.hint.loot_buried_treasure");
+    public static NeckItem MOON_LOCKET;
+    private static final RegistryObject<NeckItem> MOON_LOCKET_H = registerNeck("moon_locket", "moon_locket", NeckAbility.MOONLIGHT, CapeRarity.EPIC, "item.finery.hint.loot_stronghold");
+    public static NeckItem SERPENT_TORC;
+    private static final RegistryObject<NeckItem> SERPENT_TORC_H = registerNeck("serpent_torc", "serpent_torc", NeckAbility.ANTIVENOM, CapeRarity.EPIC, "item.finery.hint.loot_jungle_temple");
+    public static NeckItem TUNDRA_TORC;
+    private static final RegistryObject<NeckItem> TUNDRA_TORC_H = registerNeck("tundra_torc", "tundra_torc", NeckAbility.FROSTSTRIDE, CapeRarity.EPIC, "item.finery.hint.loot_igloo");
+    public static NeckItem EMBER_PENDANT;
+    private static final RegistryObject<NeckItem> EMBER_PENDANT_H = registerNeck("ember_pendant", "ember_pendant", NeckAbility.EMBERHEART, CapeRarity.LEGENDARY, "item.finery.hint.loot_nether_fortress");
+    public static NeckItem PRAYER_BEADS;
+    private static final RegistryObject<NeckItem> PRAYER_BEADS_H = registerNeck("prayer_beads", "prayer_beads", NeckAbility.BLESSING, CapeRarity.LEGENDARY, "item.finery.hint.loot_desert_pyramid");
+    public static NeckItem HEART_LOCKET;
+    private static final RegistryObject<NeckItem> HEART_LOCKET_H = registerNeck("heart_locket", "heart_locket", NeckAbility.VITALITY, CapeRarity.LEGENDARY, "item.finery.hint.loot_woodland_mansion");
+    public static NeckItem DRAGONBONE_TORC;
+    private static final RegistryObject<NeckItem> DRAGONBONE_TORC_H = registerNeck("dragonbone_torc", "dragonbone_torc", NeckAbility.DRAGON_MIGHT, CapeRarity.LEGENDARY, "item.finery.hint.loot_end_city");
+    public static WingItem DEVIL_WINGS;
+    private static final RegistryObject<WingItem> DEVIL_WINGS_H = registerWing("devil_wings", "devil_wings", WingAbility.DEVIL, "item.finery.hint.wing_devil");
+    public static WingItem DRAGON_WINGS;
+    private static final RegistryObject<WingItem> DRAGON_WINGS_H = registerWing("dragon_wings", "dragon_wings", WingAbility.DRAGON, "item.finery.hint.wing_dragon");
+    public static WingItem ANGEL_WINGS;
+    private static final RegistryObject<WingItem> ANGEL_WINGS_H = registerWing("angel_wings", "angel_wings", WingAbility.ANGEL, "item.finery.hint.wing_angel");
+    public static WingItem BUTTERFLY_WINGS;
+    private static final RegistryObject<WingItem> BUTTERFLY_WINGS_H = registerWing("butterfly_wings", "butterfly_wings", WingAbility.BUTTERFLY, "item.finery.hint.wing_butterfly");
 
-    // ── Loot-only capes (themed to structures) ──────────────────────────
-    public static final CapeItem WARDEN_CAPE = register("warden_cape", "warden",
-            CapeAbility.SCULK_VEIL, CapeRarity.LEGENDARY, "item.finery.hint.loot_ancient_city");
-    public static final CapeItem DRAGON_CAPE = register("dragon_cape", "dragon",
-            CapeAbility.DRACONIC_GRACE, CapeRarity.LEGENDARY, "item.finery.hint.loot_end_city");
-    public static final CapeItem PIRATE_CAPE = register("pirate_cape", "pirate",
-            CapeAbility.SEA_LEGS, CapeRarity.EPIC, "item.finery.hint.loot_shipwreck");
-    public static final CapeItem PHARAOH_CAPE = register("pharaoh_cape", "pharaoh",
-            CapeAbility.DESERT_STRIDE, CapeRarity.EPIC, "item.finery.hint.loot_desert_pyramid");
-    public static final CapeItem TOTEM_CAPE = register("totem_cape", "totem",
-            CapeAbility.LAST_STAND, CapeRarity.EPIC, "item.finery.hint.loot_woodland_mansion");
-    public static final CapeItem ENCHANTER_CAPE = register("enchanter_cape", "enchanter",
-            CapeAbility.ARCANE_INSIGHT, CapeRarity.EPIC, "item.finery.hint.loot_stronghold");
-    public static final CapeItem BREEZE_CAPE = register("breeze_cape", "breeze",
-            CapeAbility.WINDBORNE, CapeRarity.EPIC, "item.finery.hint.loot_trial_chambers");
-    public static final CapeItem WITHER_CAPE = register("wither_cape", "wither",
-            CapeAbility.UNDYING_EMBER, CapeRarity.EPIC, "item.finery.hint.loot_nether_fortress");
+    private static final List<RegistryObject<CapeItem>> ALL_HOLDERS = List.of(CRIMSON_CAPE_H, AZURE_CAPE_H, EMERALD_CAPE_H, VOID_CAPE_H, WARDEN_CAPE_H, DRAGON_CAPE_H, PIRATE_CAPE_H, PHARAOH_CAPE_H, TOTEM_CAPE_H, ENCHANTER_CAPE_H, BREEZE_CAPE_H, WITHER_CAPE_H);
+    public static List<CapeItem> ALL;
+    private static final List<RegistryObject<HeadItem>> HEADS_HOLDERS = List.of(WIZARD_HAT_H, HEADBAND_H, EYE_PATCH_H, CROWN_H, DRAGON_HORNS_H, RAM_HORNS_H, DEMON_HORN_H, IMP_HORNS_H, EYE_WRAP_H);
+    public static List<HeadItem> HEADS;
+    private static final List<RegistryObject<NeckItem>> NECKS_HOLDERS = List.of(SCARF_H, ROYAL_SCARF_H, CORAL_AMULET_H, MOON_LOCKET_H, SERPENT_TORC_H, TUNDRA_TORC_H, EMBER_PENDANT_H, PRAYER_BEADS_H, HEART_LOCKET_H, DRAGONBONE_TORC_H);
+    public static List<NeckItem> NECKS;
+    private static final List<RegistryObject<WingItem>> WINGS_HOLDERS = List.of(DEVIL_WINGS_H, DRAGON_WINGS_H, ANGEL_WINGS_H, BUTTERFLY_WINGS_H);
+    public static List<WingItem> WINGS;
 
-    /** All capes, in creative-tab order. */
-    public static final List<CapeItem> ALL = List.of(
-            CRIMSON_CAPE, AZURE_CAPE, EMERALD_CAPE, VOID_CAPE,
-            WARDEN_CAPE, DRAGON_CAPE, PIRATE_CAPE, PHARAOH_CAPE,
-            TOTEM_CAPE, ENCHANTER_CAPE, BREEZE_CAPE, WITHER_CAPE);
+    public static final RegistryObject<CreativeModeTab> TAB = TABS.register("finery", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.finery"))
+            .icon(() -> new ItemStack(CRIMSON_CAPE_H.get()))
+            .displayItems((params, output) -> {
+                for (RegistryObject<? extends Item> holder : ALL_HOLDERS) output.accept(holder.get());
+                for (RegistryObject<? extends Item> holder : HEADS_HOLDERS) output.accept(holder.get());
+                for (RegistryObject<? extends Item> holder : NECKS_HOLDERS) output.accept(holder.get());
+                for (RegistryObject<? extends Item> holder : WINGS_HOLDERS) output.accept(holder.get());
+            })
+            .build());
 
-    // ── Head cosmetics: hats, crown, horns, headband, eye patch ─────────
-    public static final HeadItem WIZARD_HAT = registerHead("wizard_hat", "wizard_hat", "hat",
-            HeadAbility.FORTUNE, CapeRarity.UNCOMMON, "item.finery.hint.craft");
-    public static final HeadItem HEADBAND = registerHead("headband", "headband", "hat",
-            HeadAbility.REFLEX, CapeRarity.UNCOMMON, "item.finery.hint.craft");
-    public static final HeadItem EYE_PATCH = registerHead("eye_patch", "eye_patch", "face",
-            HeadAbility.STEADY_GAZE, CapeRarity.UNCOMMON, "item.finery.hint.craft");
-    public static final HeadItem CROWN = registerHead("crown", "crown", "hat",
-            HeadAbility.VITALITY, CapeRarity.EPIC, "item.finery.hint.loot_woodland_mansion");
-    public static final HeadItem DRAGON_HORNS = registerHead("dragon_horns", "dragon_horns", "hat",
-            HeadAbility.DIVE_FURY, CapeRarity.LEGENDARY, "item.finery.hint.loot_end_city");
-    public static final HeadItem RAM_HORNS = registerHead("ram_horns", "ram_horns", "hat",
-            HeadAbility.GORE_CHARGE, CapeRarity.LEGENDARY, "item.finery.hint.loot_bastion");
-    public static final HeadItem DEMON_HORN = registerHead("demon_horn", "demon_horn", "hat",
-            HeadAbility.HELLFIRE, CapeRarity.EPIC, "item.finery.hint.loot_nether_fortress");
-    public static final HeadItem IMP_HORNS = registerHead("imp_horns", "imp_horns", "hat",
-            HeadAbility.IMP_VIGOR, CapeRarity.UNCOMMON, "item.finery.hint.craft");
-    public static final HeadItem EYE_WRAP = registerDyeableHead("eye_wrap", "eye_wrap", "face",
-            HeadAbility.SHADOW_SIGHT, CapeRarity.UNCOMMON, "item.finery.hint.craft", 0);
-
-    /** All head cosmetics, in creative-tab order. */
-    public static final List<HeadItem> HEADS = List.of(
-            WIZARD_HAT, HEADBAND, EYE_PATCH, CROWN, DRAGON_HORNS, RAM_HORNS,
-            DEMON_HORN, IMP_HORNS, EYE_WRAP);
-
-    // ── Neckwear: scarves, amulets, torcs (chapter 3) ────────────────────
-    public static final NeckItem SCARF = registerDyeableNeck("scarf", "scarf",
-            NeckAbility.WARMTH, CapeRarity.UNCOMMON, "item.finery.hint.craft", 0);
-    public static final NeckItem ROYAL_SCARF = registerNeck("royal_scarf", "royal_scarf",
-            NeckAbility.WARMTH, CapeRarity.EPIC, "item.finery.hint.craft");
-    public static final NeckItem CORAL_AMULET = registerNeck("coral_amulet", "coral_amulet",
-            NeckAbility.CORAL_CONDUIT, CapeRarity.EPIC, "item.finery.hint.loot_buried_treasure");
-    public static final NeckItem MOON_LOCKET = registerNeck("moon_locket", "moon_locket",
-            NeckAbility.MOONLIGHT, CapeRarity.EPIC, "item.finery.hint.loot_stronghold");
-    public static final NeckItem SERPENT_TORC = registerNeck("serpent_torc", "serpent_torc",
-            NeckAbility.ANTIVENOM, CapeRarity.EPIC, "item.finery.hint.loot_jungle_temple");
-    public static final NeckItem TUNDRA_TORC = registerNeck("tundra_torc", "tundra_torc",
-            NeckAbility.FROSTSTRIDE, CapeRarity.EPIC, "item.finery.hint.loot_igloo");
-    public static final NeckItem EMBER_PENDANT = registerNeck("ember_pendant", "ember_pendant",
-            NeckAbility.EMBERHEART, CapeRarity.LEGENDARY, "item.finery.hint.loot_nether_fortress");
-    public static final NeckItem PRAYER_BEADS = registerNeck("prayer_beads", "prayer_beads",
-            NeckAbility.BLESSING, CapeRarity.LEGENDARY, "item.finery.hint.loot_desert_pyramid");
-    public static final NeckItem HEART_LOCKET = registerNeck("heart_locket", "heart_locket",
-            NeckAbility.VITALITY, CapeRarity.LEGENDARY, "item.finery.hint.loot_woodland_mansion");
-    public static final NeckItem DRAGONBONE_TORC = registerNeck("dragonbone_torc", "dragonbone_torc",
-            NeckAbility.DRAGON_MIGHT, CapeRarity.LEGENDARY, "item.finery.hint.loot_end_city");
-
-    /** All neckwear, in creative-tab order. */
-    public static final List<NeckItem> NECKS = List.of(
-            SCARF, ROYAL_SCARF,
-            CORAL_AMULET, MOON_LOCKET, SERPENT_TORC, TUNDRA_TORC,
-            EMBER_PENDANT, PRAYER_BEADS, HEART_LOCKET, DRAGONBONE_TORC);
-
-    // ── Legendary wings, back slot (chapter 4) ───────────────────────────
-    public static final WingItem DEVIL_WINGS = registerWing("devil_wings", "devil_wings",
-            WingAbility.DEVIL, "item.finery.hint.wing_devil");
-    public static final WingItem DRAGON_WINGS = registerWing("dragon_wings", "dragon_wings",
-            WingAbility.DRAGON, "item.finery.hint.wing_dragon");
-    public static final WingItem ANGEL_WINGS = registerWing("angel_wings", "angel_wings",
-            WingAbility.ANGEL, "item.finery.hint.wing_angel");
-    public static final WingItem BUTTERFLY_WINGS = registerWing("butterfly_wings", "butterfly_wings",
-            WingAbility.BUTTERFLY, "item.finery.hint.wing_butterfly");
-
-    /** All wings. Wings and capes cannot be worn together. */
-    public static final List<WingItem> WINGS = List.of(
-            DEVIL_WINGS, DRAGON_WINGS, ANGEL_WINGS, BUTTERFLY_WINGS);
-
-    /** Dedicated creative tab so the 12 capes don't flood vanilla tabs. */
-    public static final ItemGroup GROUP = Registry.register(Registries.ITEM_GROUP,
-            Identifier.of(Finery.MOD_ID, "main"),
-            FabricItemGroup.builder()
-                    .displayName(Text.translatable("itemGroup.finery.main"))
-                    .icon(() -> new ItemStack(DRAGON_CAPE))
-                    .entries((context, entries) -> {
-                        ALL.forEach(entries::add);
-                        HEADS.forEach(entries::add);
-                        NECKS.forEach(entries::add);
-                        WINGS.forEach(entries::add);
-                    })
-                    .build());
-
-    // 1.21.10 resolves the item translation key inside the Item constructor, so the
-    // registry key must already be present in the settings before registration.
-    private static Item.Settings settings(String name) {
-        //? if <1.21.2 {
-        /*return new Item.Settings().maxCount(1);
-        *///?} else {
-        return new Item.Settings().maxCount(1)
-                .registryKey(RegistryKey.of(RegistryKeys.ITEM, Identifier.of(Finery.MOD_ID, name)));
-        //?}
+    private ModItems() {
     }
 
-    private static CapeItem register(String name, String variant, CapeAbility ability,
-                                     CapeRarity rarity, String hintKey) {
-        return Registry.register(Registries.ITEM, Identifier.of(Finery.MOD_ID, name),
-                new CapeItem(settings(name), variant, ability, rarity, hintKey));
+    public static void register(net.minecraftforge.eventbus.api.IEventBus bus) {
+        ITEMS.register(bus);
+        TABS.register(bus);
     }
 
-    private static HeadItem registerHead(String name, String variant, String slot,
-                                         HeadAbility ability, CapeRarity rarity, String hintKey) {
-        return Registry.register(Registries.ITEM, Identifier.of(Finery.MOD_ID, name),
-                new HeadItem(settings(name), variant, slot, ability, rarity, hintKey));
-    }
+    /** Runs after registries are frozen. */
+    public static void bind() {
+        CRIMSON_CAPE = CRIMSON_CAPE_H.get();
+        AZURE_CAPE = AZURE_CAPE_H.get();
+        EMERALD_CAPE = EMERALD_CAPE_H.get();
+        VOID_CAPE = VOID_CAPE_H.get();
+        WARDEN_CAPE = WARDEN_CAPE_H.get();
+        DRAGON_CAPE = DRAGON_CAPE_H.get();
+        PIRATE_CAPE = PIRATE_CAPE_H.get();
+        PHARAOH_CAPE = PHARAOH_CAPE_H.get();
+        TOTEM_CAPE = TOTEM_CAPE_H.get();
+        ENCHANTER_CAPE = ENCHANTER_CAPE_H.get();
+        BREEZE_CAPE = BREEZE_CAPE_H.get();
+        WITHER_CAPE = WITHER_CAPE_H.get();
+        WIZARD_HAT = WIZARD_HAT_H.get();
+        HEADBAND = HEADBAND_H.get();
+        EYE_PATCH = EYE_PATCH_H.get();
+        CROWN = CROWN_H.get();
+        DRAGON_HORNS = DRAGON_HORNS_H.get();
+        RAM_HORNS = RAM_HORNS_H.get();
+        DEMON_HORN = DEMON_HORN_H.get();
+        IMP_HORNS = IMP_HORNS_H.get();
+        EYE_WRAP = EYE_WRAP_H.get();
+        SCARF = SCARF_H.get();
+        ROYAL_SCARF = ROYAL_SCARF_H.get();
+        CORAL_AMULET = CORAL_AMULET_H.get();
+        MOON_LOCKET = MOON_LOCKET_H.get();
+        SERPENT_TORC = SERPENT_TORC_H.get();
+        TUNDRA_TORC = TUNDRA_TORC_H.get();
+        EMBER_PENDANT = EMBER_PENDANT_H.get();
+        PRAYER_BEADS = PRAYER_BEADS_H.get();
+        HEART_LOCKET = HEART_LOCKET_H.get();
+        DRAGONBONE_TORC = DRAGONBONE_TORC_H.get();
+        DEVIL_WINGS = DEVIL_WINGS_H.get();
+        DRAGON_WINGS = DRAGON_WINGS_H.get();
+        ANGEL_WINGS = ANGEL_WINGS_H.get();
+        BUTTERFLY_WINGS = BUTTERFLY_WINGS_H.get();
 
-    private static HeadItem registerDyeableHead(String name, String variant, String slot,
-                                                HeadAbility ability, CapeRarity rarity, String hintKey,
-                                                int defaultDye) {
-        return Registry.register(Registries.ITEM, Identifier.of(Finery.MOD_ID, name),
-                new DyeableHeadItem(settings(name), variant, slot, ability, rarity, hintKey, defaultDye));
-    }
-
-    private static NeckItem registerNeck(String name, String variant, NeckAbility ability,
-                                         CapeRarity rarity, String hintKey) {
-        return Registry.register(Registries.ITEM, Identifier.of(Finery.MOD_ID, name),
-                new NeckItem(settings(name), variant, ability, rarity, hintKey));
-    }
-
-    private static NeckItem registerDyeableNeck(String name, String variant, NeckAbility ability,
-                                                CapeRarity rarity, String hintKey, int defaultDye) {
-        return Registry.register(Registries.ITEM, Identifier.of(Finery.MOD_ID, name),
-                new DyeableNeckItem(settings(name), variant, ability, rarity, hintKey, defaultDye));
-    }
-
-    private static WingItem registerWing(String name, String variant, WingAbility ability,
-                                         String hintKey) {
-        return Registry.register(Registries.ITEM, Identifier.of(Finery.MOD_ID, name),
-                new WingItem(settings(name).fireproof(), variant, ability,
-                        CapeRarity.LEGENDARY, hintKey));
-    }
-
-    /** Triggered from ModInitializer; class-load runs the static registration above. */
-    public static void register() {
+        ALL = List.copyOf(ALL_HOLDERS.stream().map(RegistryObject::get).toList());
+        HEADS = List.copyOf(HEADS_HOLDERS.stream().map(RegistryObject::get).toList());
+        NECKS = List.copyOf(NECKS_HOLDERS.stream().map(RegistryObject::get).toList());
+        WINGS = List.copyOf(WINGS_HOLDERS.stream().map(RegistryObject::get).toList());
         Finery.LOGGER.info("[Finery] Registered {} capes, {} head cosmetics, {} neckwear and {} wings.",
                 ALL.size(), HEADS.size(), NECKS.size(), WINGS.size());
+    }
+
+    private static Item.Properties settings() {
+        return new Item.Properties().stacksTo(1);
+    }
+
+    private static RegistryObject<CapeItem> register(String name, String variant, CapeAbility ability,
+                                                    CapeRarity rarity, String hintKey) {
+        return ITEMS.register(name, () -> new CapeItem(settings(), variant, ability, rarity, hintKey));
+    }
+
+    private static RegistryObject<HeadItem> registerHead(String name, String variant, String slot,
+                                                         HeadAbility ability, CapeRarity rarity, String hintKey) {
+        return ITEMS.register(name, () -> new HeadItem(settings(), variant, slot, ability, rarity, hintKey));
+    }
+
+    private static RegistryObject<HeadItem> registerDyeableHead(String name, String variant, String slot,
+                                                                HeadAbility ability, CapeRarity rarity,
+                                                                String hintKey, int defaultDye) {
+        return ITEMS.register(name, () -> new DyeableHeadItem(settings(), variant, slot, ability, rarity, hintKey, defaultDye));
+    }
+
+    private static RegistryObject<NeckItem> registerNeck(String name, String variant, NeckAbility ability,
+                                                         CapeRarity rarity, String hintKey) {
+        return ITEMS.register(name, () -> new NeckItem(settings(), variant, ability, rarity, hintKey));
+    }
+
+    private static RegistryObject<NeckItem> registerDyeableNeck(String name, String variant, NeckAbility ability,
+                                                                CapeRarity rarity, String hintKey, int defaultDye) {
+        return ITEMS.register(name, () -> new DyeableNeckItem(settings(), variant, ability, rarity, hintKey, defaultDye));
+    }
+
+    private static RegistryObject<WingItem> registerWing(String name, String variant, WingAbility ability,
+                                                         String hintKey) {
+        return ITEMS.register(name, () -> new WingItem(settings().fireResistant(), variant, ability,
+                CapeRarity.LEGENDARY, hintKey));
     }
 }

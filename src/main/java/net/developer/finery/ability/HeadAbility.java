@@ -1,12 +1,12 @@
 package net.developer.finery.ability;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Passive abilities for the head cosmetics. Same server-side tick pattern
@@ -33,38 +33,38 @@ public enum HeadAbility {
     SHADOW_SIGHT;
 
     public void tick(LivingEntity entity) {
-        if (!(entity.getEntityWorld() instanceof ServerWorld) || !(entity instanceof PlayerEntity player)) {
+        if (!(entity.getCommandSenderWorld() instanceof ServerLevel) || !(entity instanceof Player player)) {
             return;
         }
 
         switch (this) {
-            case FORTUNE -> persistent(player, StatusEffects.LUCK, 0);
+            case FORTUNE -> persistent(player, MobEffects.LUCK, 0);
             case REFLEX -> {
-                if (player.hurtTime > 6 && !player.hasStatusEffect(StatusEffects.SPEED)) {
-                    apply(player, StatusEffects.SPEED, 60, 0);
+                if (player.hurtTime > 6 && !player.hasEffect(MobEffects.MOVEMENT_SPEED)) {
+                    apply(player, MobEffects.MOVEMENT_SPEED, 60, 0);
                 }
             }
             case STEADY_GAZE -> {
-                if (player.hasStatusEffect(StatusEffects.BLINDNESS)) {
-                    player.removeStatusEffect(StatusEffects.BLINDNESS);
+                if (player.hasEffect(MobEffects.BLINDNESS)) {
+                    player.removeEffect(MobEffects.BLINDNESS);
                 }
             }
             case VITALITY -> CosmeticStats.setMaxHealth(player, "crown_health", true, 4.0D);
             case DIVE_FURY -> {
-                if (!player.isOnGround() && !player.isTouchingWater() && !player.hasVehicle()) {
-                    apply(player, StatusEffects.STRENGTH, 30, 0);
+                if (!player.onGround() && !player.isInWater() && !player.isPassenger()) {
+                    apply(player, MobEffects.DAMAGE_BOOST, 30, 0);
                 }
             }
             case GORE_CHARGE -> {
-                if (player.isSprinting() && !player.hasVehicle()) {
-                    apply(player, StatusEffects.STRENGTH, 30, 0);
+                if (player.isSprinting() && !player.isPassenger()) {
+                    apply(player, MobEffects.DAMAGE_BOOST, 30, 0);
                 }
             }
-            case HELLFIRE -> apply(player, StatusEffects.FIRE_RESISTANCE, 300, 0);
-            case IMP_VIGOR -> apply(player, StatusEffects.ABSORPTION, 300, 0);
+            case HELLFIRE -> apply(player, MobEffects.FIRE_RESISTANCE, 300, 0);
+            case IMP_VIGOR -> apply(player, MobEffects.ABSORPTION, 300, 0);
             case SHADOW_SIGHT -> {
-                if (player.hasStatusEffect(StatusEffects.DARKNESS)) {
-                    player.removeStatusEffect(StatusEffects.DARKNESS);
+                if (player.hasEffect(MobEffects.DARKNESS)) {
+                    player.removeEffect(MobEffects.DARKNESS);
                 }
             }
         }
@@ -72,10 +72,10 @@ public enum HeadAbility {
 
     /** Equipment passives: applied once while worn and removed on unequip. */
     public void onEquip(LivingEntity entity) {
-        if (entity instanceof PlayerEntity player) {
+        if (entity instanceof Player player) {
             switch (this) {
                 case VITALITY -> CosmeticStats.setMaxHealth(player, "crown_health", true, 4.0D);
-                case FORTUNE -> persistent(player, StatusEffects.LUCK, 0);
+                case FORTUNE -> persistent(player, MobEffects.LUCK, 0);
                 default -> {
                 }
             }
@@ -83,10 +83,10 @@ public enum HeadAbility {
     }
 
     public void onUnequip(LivingEntity entity) {
-        if (entity instanceof PlayerEntity player) {
+        if (entity instanceof Player player) {
             switch (this) {
                 case VITALITY -> CosmeticStats.setMaxHealth(player, "crown_health", false, 0.0D);
-                case FORTUNE -> player.removeStatusEffect(StatusEffects.LUCK);
+                case FORTUNE -> player.removeEffect(MobEffects.LUCK);
                 default -> {
                 }
             }
@@ -94,21 +94,21 @@ public enum HeadAbility {
     }
 
     //? if <1.20.5 {
-    /*private static void persistent(LivingEntity entity, StatusEffect effect, int amplifier) {
-        var current = entity.getStatusEffect(effect);
+    private static void persistent(LivingEntity entity, MobEffect effect, int amplifier) {
+        var current = entity.getEffect(effect);
         if (current == null || current.getAmplifier() < amplifier) {
-            entity.addStatusEffect(new StatusEffectInstance(effect, Integer.MAX_VALUE, amplifier, true, false, false));
+            entity.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, amplifier, true, false, false));
         }
     }
 
-    private static void apply(LivingEntity entity, StatusEffect effect, int duration, int amplifier) {
-        StatusEffectInstance current = entity.getStatusEffect(effect);
+    private static void apply(LivingEntity entity, MobEffect effect, int duration, int amplifier) {
+        MobEffectInstance current = entity.getEffect(effect);
         if (current == null || current.getDuration() < duration / 2) {
-            entity.addStatusEffect(new StatusEffectInstance(effect, duration, amplifier, true, false, false));
+            entity.addEffect(new MobEffectInstance(effect, duration, amplifier, true, false, false));
         }
     }
-    *///?} else {
-    private static void persistent(LivingEntity entity, RegistryEntry<StatusEffect> effect, int amplifier) {
+    //?} else {
+    /*private static void persistent(LivingEntity entity, RegistryEntry<StatusEffect> effect, int amplifier) {
         var current = entity.getStatusEffect(effect);
         if (current == null || current.getAmplifier() < amplifier) {
             entity.addStatusEffect(new StatusEffectInstance(effect, Integer.MAX_VALUE, amplifier, true, false, false));
@@ -121,5 +121,5 @@ public enum HeadAbility {
             entity.addStatusEffect(new StatusEffectInstance(effect, duration, amplifier, true, false, false));
         }
     }
-    //?}
+    *///?}
 }

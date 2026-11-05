@@ -1,18 +1,25 @@
 package net.developer.finery.item;
 
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtInt;
-import net.minecraft.text.Text;
+import net.minecraft.util.Mth;
+
+import net.developer.finery.provider.ProviderRegistry;
+import net.developer.finery.provider.SlotKind;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurioItem;
+
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.network.chat.Component;
 
 //? if <1.20.5 {
-/*import net.minecraft.nbt.NbtCompound;
-*///?} else {
-import net.minecraft.component.DataComponentTypes;
+import net.minecraft.nbt.CompoundTag;
+//?} else {
+/*import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
-import net.minecraft.nbt.NbtCompound;
-//?}
+import net.minecraft.nbt.CompoundTag;
+*///?}
 
 /**
  * Per-stack dye colour for dyable cosmetics, stored as a vanilla dye id.
@@ -20,7 +27,7 @@ import net.minecraft.nbt.NbtCompound;
  */
 public final class CosmeticDye {
 
-    /** Dye ids in {@link net.minecraft.util.DyeColor} ordinal order. */
+    /** Dye ids in {@link net.minecraft.world.item.DyeColor} ordinal order. */
     public static final String[] NAMES = {
             "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
             "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"
@@ -38,34 +45,34 @@ public final class CosmeticDye {
 
     public static int get(ItemStack stack, int fallback) {
         //? if <1.20.5 {
-        /*return read(stack.getNbt(), fallback);
-        *///?} else {
-        NbtComponent data = stack.get(DataComponentTypes.CUSTOM_DATA);
+        return read(stack.getTag(), fallback);
+        //?} else {
+        /*NbtComponent data = stack.get(DataComponentTypes.CUSTOM_DATA);
         return data == null ? fallback : read(data.copyNbt(), fallback);
-        //?}
+        *///?}
     }
 
     public static void set(ItemStack stack, int dye) {
         //? if <1.20.5 {
-        /*stack.getOrCreateNbt().putInt(KEY, dye);
-        *///?} else {
-        NbtComponent existing = stack.get(DataComponentTypes.CUSTOM_DATA);
+        stack.getOrCreateTag().putInt(KEY, dye);
+        //?} else {
+        /*NbtComponent existing = stack.get(DataComponentTypes.CUSTOM_DATA);
         NbtCompound nbt = existing == null ? new NbtCompound() : existing.copyNbt();
         nbt.putInt(KEY, dye);
         stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
-        //?}
+        *///?}
     }
 
     public static int fromDye(ItemStack stack) {
-        return stack.getItem() instanceof DyeItem dye ? dye.getColor().ordinal() : -1;
+        return stack.getItem() instanceof DyeItem dye ? dye.getDyeColor().ordinal() : -1;
     }
 
     public static String suffix(int dye) {
         return NAMES[Math.max(0, Math.min(NAMES.length - 1, dye))];
     }
 
-    public static Text colorName(int dye) {
-        return Text.translatable("color.minecraft." + suffix(dye));
+    public static Component colorName(int dye) {
+        return Component.translatable("color.minecraft." + suffix(dye));
     }
 
 
@@ -79,11 +86,11 @@ public final class CosmeticDye {
         return RGB[Math.max(0, Math.min(RGB.length - 1, dye))];
     }
 
-    private static int read(NbtCompound nbt, int fallback) {
+    private static int read(CompoundTag nbt, int fallback) {
         if (nbt == null) {
             return fallback;
         }
-        NbtElement tag = nbt.get(KEY);
-        return tag instanceof NbtInt value ? value.intValue() : fallback;
+        Tag tag = nbt.get(KEY);
+        return tag instanceof IntTag value ? value.getAsInt() : fallback;
     }
 }

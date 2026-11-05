@@ -39,3 +39,10 @@ _port/mojmap-src2/
 _port/port-src/
 _port/member_map.json
 _port/methods.json
+
+# NeoForge build outputs
+build/
+run/
+run-server/
+*.log
+_port/

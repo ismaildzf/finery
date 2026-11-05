@@ -1,54 +1,41 @@
 package net.developer.finery.recipe;
 
+import com.google.gson.JsonObject;
 import net.developer.finery.item.CosmeticDye;
 import net.developer.finery.item.DyeableHeadItem;
 import net.developer.finery.item.DyeableNeckItem;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SpecialCraftingRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-//? if <1.20.5 {
-/*import com.google.gson.JsonObject;
-import net.minecraft.inventory.RecipeInputInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.Identifier;
-*///?} else {
-import com.mojang.serialization.MapCodec;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.registry.RegistryWrapper;
-//?}
-
-/**
- * One dyeable cosmetic + one dye, in any slots, produces the same piece in that colour.
- * Implemented as a special recipe so the colour can live on the stack.
- */
-//? if <1.20.5 {
-/*public class DyeCosmeticRecipe extends SpecialCraftingRecipe {
-
-    public DyeCosmeticRecipe(Identifier id, CraftingRecipeCategory category) {
+/** One dyeable cosmetic + one dye, in any slots, produces the same piece in that colour. */
+public class DyeCosmeticRecipe extends CustomRecipe {
+    public DyeCosmeticRecipe(ResourceLocation id, CraftingBookCategory category) {
         super(id, category);
     }
 
     @Override
-    public boolean matches(RecipeInputInventory input, World world) {
-        return find(input.getInputStacks()) != null;
+    public boolean matches(CraftingContainer input, Level level) {
+        return find(input.getItems()) != null;
     }
 
     @Override
-    public ItemStack craft(RecipeInputInventory input, DynamicRegistryManager manager) {
-        return result(input.getInputStacks());
+    public ItemStack assemble(CraftingContainer input, RegistryAccess registries) {
+        return result(input.getItems());
     }
 
     @Override
-    public boolean fits(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width * height >= 2;
     }
 
@@ -68,7 +55,7 @@ import net.minecraft.registry.RegistryWrapper;
                 if (dye >= 0) {
                     return null;
                 }
-                dye = dyeItem.getColor().ordinal();
+                dye = dyeItem.getDyeColor().ordinal();
             } else if (stack.getItem() instanceof DyeableHeadItem || stack.getItem() instanceof DyeableNeckItem) {
                 if (!cosmetic.isEmpty()) {
                     return null;
@@ -100,107 +87,17 @@ import net.minecraft.registry.RegistryWrapper;
 
     public static final RecipeSerializer<DyeCosmeticRecipe> SERIALIZER = new RecipeSerializer<>() {
         @Override
-        public DyeCosmeticRecipe read(Identifier id, JsonObject json) {
-            return new DyeCosmeticRecipe(id, CraftingRecipeCategory.EQUIPMENT);
+        public DyeCosmeticRecipe fromJson(ResourceLocation id, JsonObject json) {
+            return new DyeCosmeticRecipe(id, CraftingBookCategory.EQUIPMENT);
         }
 
         @Override
-        public DyeCosmeticRecipe read(Identifier id, PacketByteBuf buf) {
-            return new DyeCosmeticRecipe(id, CraftingRecipeCategory.EQUIPMENT);
+        public DyeCosmeticRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+            return new DyeCosmeticRecipe(id, CraftingBookCategory.EQUIPMENT);
         }
 
         @Override
-        public void write(PacketByteBuf buf, DyeCosmeticRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buf, DyeCosmeticRecipe recipe) {
         }
     };
 }
-*///?} else {
-public class DyeCosmeticRecipe extends SpecialCraftingRecipe {
-
-    public DyeCosmeticRecipe(CraftingRecipeCategory category) {
-        super(category);
-    }
-
-    @Override
-    public boolean matches(CraftingRecipeInput input, World world) {
-        return find(input.getStacks()) != null;
-    }
-
-    @Override
-    public ItemStack craft(CraftingRecipeInput input, RegistryWrapper.WrapperLookup lookup) {
-        return result(input.getStacks());
-    }
-
-    //? if <1.21.3 {
-    /*@Override
-    public boolean fits(int width, int height) {
-        return width * height >= 2;
-    }
-    *///?}
-
-    @Override
-    public RecipeSerializer<? extends SpecialCraftingRecipe> getSerializer() {
-        return SERIALIZER;
-    }
-
-    private static Match find(List<ItemStack> stacks) {
-        ItemStack cosmetic = ItemStack.EMPTY;
-        int dye = -1;
-        for (ItemStack stack : stacks) {
-            if (stack.isEmpty()) {
-                continue;
-            }
-            if (stack.getItem() instanceof DyeItem dyeItem) {
-                if (dye >= 0) {
-                    return null;
-                }
-                dye = dyeItem.getColor().ordinal();
-            } else if (stack.getItem() instanceof DyeableHeadItem || stack.getItem() instanceof DyeableNeckItem) {
-                if (!cosmetic.isEmpty()) {
-                    return null;
-                }
-                cosmetic = stack;
-            } else {
-                return null;
-            }
-        }
-        if (cosmetic.isEmpty() || dye < 0) {
-            return null;
-        }
-        return new Match(cosmetic, dye);
-    }
-
-    private static ItemStack result(List<ItemStack> stacks) {
-        Match match = find(stacks);
-        if (match == null) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack out = match.cosmetic.copy();
-        out.setCount(1);
-        CosmeticDye.set(out, match.dye);
-        return out;
-    }
-
-    private record Match(ItemStack cosmetic, int dye) {
-    }
-
-    private static final DyeCosmeticRecipe PROTOTYPE =
-            new DyeCosmeticRecipe(CraftingRecipeCategory.EQUIPMENT);
-
-    public static final RecipeSerializer<DyeCosmeticRecipe> SERIALIZER = new RecipeSerializer<>() {
-        private final MapCodec<DyeCosmeticRecipe> mapCodec = MapCodec.unit(PROTOTYPE);
-        private final PacketCodec<RegistryByteBuf, DyeCosmeticRecipe> packetCodec =
-                PacketCodec.ofStatic((buf, recipe) -> { }, buf -> PROTOTYPE);
-
-        @Override
-        public MapCodec<DyeCosmeticRecipe> codec() {
-            return mapCodec;
-        }
-
-        @Override
-        public PacketCodec<RegistryByteBuf, DyeCosmeticRecipe> packetCodec() {
-            return packetCodec;
-        }
-    };
-}
-//?}

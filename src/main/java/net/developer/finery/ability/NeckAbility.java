@@ -1,13 +1,13 @@
 package net.developer.finery.ability;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 
 /**
  * Passive abilities for the neckwear chapter. Same server-side tick pattern
@@ -36,49 +36,49 @@ public enum NeckAbility {
     DRAGON_MIGHT;
 
     public void tick(LivingEntity entity) {
-        if (!(entity.getEntityWorld() instanceof ServerWorld) || !(entity instanceof PlayerEntity player)) {
+        if (!(entity.getCommandSenderWorld() instanceof ServerLevel) || !(entity instanceof Player player)) {
             return;
         }
 
         switch (this) {
             case WARMTH -> {
-                if (player.getFrozenTicks() > 0) {
-                    player.setFrozenTicks(0);
+                if (player.getTicksFrozen() > 0) {
+                    player.setTicksFrozen(0);
                 }
             }
             case GLIDEWALK -> {
-                if (player.isSneaking()) {
-                    apply(player, StatusEffects.SLOW_FALLING, 40, 0);
+                if (player.isShiftKeyDown()) {
+                    apply(player, MobEffects.SLOW_FALLING, 40, 0);
                 }
             }
-            case CORAL_CONDUIT -> apply(player, StatusEffects.CONDUIT_POWER, 200, 0);
+            case CORAL_CONDUIT -> apply(player, MobEffects.CONDUIT_POWER, 200, 0);
             case MOONLIGHT -> {
-                if (player.getEntityWorld().isNight()) {
-                    apply(player, StatusEffects.NIGHT_VISION, 300, 0);
+                if (player.getCommandSenderWorld().isNight()) {
+                    apply(player, MobEffects.NIGHT_VISION, 300, 0);
                 }
             }
             case ANTIVENOM -> {
-                if (player.hasStatusEffect(StatusEffects.POISON)) {
-                    player.removeStatusEffect(StatusEffects.POISON);
+                if (player.hasEffect(MobEffects.POISON)) {
+                    player.removeEffect(MobEffects.POISON);
                 }
             }
             case FROSTSTRIDE -> {
-                if (player.getFrozenTicks() > 0) {
-                    player.setFrozenTicks(0);
+                if (player.getTicksFrozen() > 0) {
+                    player.setTicksFrozen(0);
                 }
-                var below = player.getSteppingBlockState();
-                if (below.isOf(Blocks.SNOW) || below.isOf(Blocks.SNOW_BLOCK) || below.isOf(Blocks.ICE)
-                        || below.isOf(Blocks.PACKED_ICE) || below.isOf(Blocks.BLUE_ICE)
-                        || below.isOf(Blocks.POWDER_SNOW)) {
-                    apply(player, StatusEffects.SPEED, 40, 0);
+                var below = player.getBlockStateOn();
+                if (below.is(Blocks.SNOW) || below.is(Blocks.SNOW_BLOCK) || below.is(Blocks.ICE)
+                        || below.is(Blocks.PACKED_ICE) || below.is(Blocks.BLUE_ICE)
+                        || below.is(Blocks.POWDER_SNOW)) {
+                    apply(player, MobEffects.MOVEMENT_SPEED, 40, 0);
                 }
             }
-            case EMBERHEART -> apply(player, StatusEffects.FIRE_RESISTANCE, 120, 0);
-            case BLESSING -> apply(player, StatusEffects.REGENERATION, 120, 0);
+            case EMBERHEART -> apply(player, MobEffects.FIRE_RESISTANCE, 120, 0);
+            case BLESSING -> apply(player, MobEffects.REGENERATION, 120, 0);
             case VITALITY -> CosmeticStats.setMaxHealth(player, "locket_health", true, 8.0D);
             case DRAGON_MIGHT -> {
                 if (player.getHealth() <= player.getMaxHealth() * 0.5F) {
-                    apply(player, StatusEffects.STRENGTH, 60, 0);
+                    apply(player, MobEffects.DAMAGE_BOOST, 60, 0);
                 }
             }
         }
@@ -86,33 +86,33 @@ public enum NeckAbility {
 
     /** Equipment passives: applied once while worn and removed on unequip. */
     public void onEquip(LivingEntity entity) {
-        if (entity instanceof PlayerEntity player && this == VITALITY) {
+        if (entity instanceof Player player && this == VITALITY) {
             CosmeticStats.setMaxHealth(player, "locket_health", true, 8.0D);
         }
     }
 
     public void onUnequip(LivingEntity entity) {
-        if (entity instanceof PlayerEntity player && this == VITALITY) {
+        if (entity instanceof Player player && this == VITALITY) {
             CosmeticStats.setMaxHealth(player, "locket_health", false, 0.0D);
         }
     }
 
     //? if <1.20.5 {
-    /*private static void persistent(LivingEntity entity, StatusEffect effect, int amplifier) {
-        var current = entity.getStatusEffect(effect);
+    private static void persistent(LivingEntity entity, MobEffect effect, int amplifier) {
+        var current = entity.getEffect(effect);
         if (current == null || current.getAmplifier() < amplifier) {
-            entity.addStatusEffect(new StatusEffectInstance(effect, Integer.MAX_VALUE, amplifier, true, false, false));
+            entity.addEffect(new MobEffectInstance(effect, Integer.MAX_VALUE, amplifier, true, false, false));
         }
     }
 
-    private static void apply(LivingEntity entity, StatusEffect effect, int duration, int amplifier) {
-        StatusEffectInstance current = entity.getStatusEffect(effect);
+    private static void apply(LivingEntity entity, MobEffect effect, int duration, int amplifier) {
+        MobEffectInstance current = entity.getEffect(effect);
         if (current == null || current.getDuration() < duration / 2) {
-            entity.addStatusEffect(new StatusEffectInstance(effect, duration, amplifier, true, false, false));
+            entity.addEffect(new MobEffectInstance(effect, duration, amplifier, true, false, false));
         }
     }
-    *///?} else {
-    private static void persistent(LivingEntity entity, RegistryEntry<StatusEffect> effect, int amplifier) {
+    //?} else {
+    /*private static void persistent(LivingEntity entity, RegistryEntry<StatusEffect> effect, int amplifier) {
         var current = entity.getStatusEffect(effect);
         if (current == null || current.getAmplifier() < amplifier) {
             entity.addStatusEffect(new StatusEffectInstance(effect, Integer.MAX_VALUE, amplifier, true, false, false));
@@ -125,5 +125,5 @@ public enum NeckAbility {
             entity.addStatusEffect(new StatusEffectInstance(effect, duration, amplifier, true, false, false));
         }
     }
-    //?}
+    *///?}
 }

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": ["WWW", "WMW", " W "],
+  "key": {
+    "W": { "item": "minecraft:red_wool" },
+    "M": { "item": "minecraft:blaze_powder" }
+  },
+  "result": { "count": 1, "item": "finery:crimson_cape" }
+}
