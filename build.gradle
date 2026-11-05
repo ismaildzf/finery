@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.38'
 }
 
 version = '1.0.0-neoforge'
@@ -39,4 +40,19 @@ repositories {
 dependencies {
     minecraft 'net.neoforged:forge:1.20.1-47.1.106'
     implementation fg.deobf('top.theillusivec4.curios:curios-forge:5.14.1+1.20.1')
+}
+
+mixin {
+    add sourceSets.main, 'finery.refmap.json'
+    config 'finery.mixins.json'
+}
+
+dependencies {
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+jar {
+    manifest.attributes([
+            'MixinConfigs': 'finery.mixins.json'
+    ])
 }
