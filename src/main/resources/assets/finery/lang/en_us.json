@@ -150,5 +150,6 @@
   "item.finery.cape.exclusive": "Cannot be worn together with wings.",
   "item.finery.royal_scarf": "Royal Scarf",
   "item.finery.royal_scarf.ability": "Royal Warmth",
-  "item.finery.royal_scarf.desc": "§7• Prevents §6freezing§7; only the §6gold embroidery§7 takes the dye colour"
+  "item.finery.royal_scarf.desc": "§7• Prevents §6freezing§7; only the §6gold embroidery§7 takes the dye colour",
+  "itemGroup.finery": "Finery"
 }

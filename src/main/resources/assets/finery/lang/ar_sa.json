@@ -150,5 +150,6 @@
   "item.finery.cape.exclusive": "لا يمكن لبسها مع أجنحة.",
   "item.finery.royal_scarf": "وشاح ملكي",
   "item.finery.royal_scarf.ability": "دفء ملكي",
-  "item.finery.royal_scarf.desc": "§7• يمنع §6التجمد§7، والتطريز §6الذهبي§7 وحده يأخذ لون الصبغة"
+  "item.finery.royal_scarf.desc": "§7• يمنع §6التجمد§7، والتطريز §6الذهبي§7 وحده يأخذ لون الصبغة",
+  "itemGroup.finery": "فاينري"
 }

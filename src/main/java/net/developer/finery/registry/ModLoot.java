@@ -18,6 +18,8 @@ public final class ModLoot {
     private ModLoot() {
     }
 
+    public static int injections;
+
     @SubscribeEvent
     public static void onLootTableLoad(LootTableLoadEvent event) {
         ResourceLocation id = event.getName();
@@ -74,5 +76,6 @@ public final class ModLoot {
                 .add(LootItem.lootTableItem(item))
                 .build();
         event.getTable().addPool(pool);
+        injections++;
     }
 }
