@@ -27,6 +27,8 @@ Every piece carries a small passive (fire resistance, night vision, extra hearts
 | 1.21.10 | `finery-1.0.0+1.21.10.jar` |
 | 1.21.11 | `finery-1.0.0+1.21.11.jar` |
 
+GitHub release assets are the same jars; GitHub rewrites `+` to `.` in asset names (`finery-1.0.0.1.20.1.jar`).
+
 Requires Fabric Loader, Fabric API and Accessories. owo-lib is also required on 1.21.3 and 1.21.4.
 
 1.21.11 has no official Accessories build yet — use the community Fabric port of Accessories 1.4.3 with owo-lib 0.13.0.
