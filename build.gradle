@@ -53,6 +53,8 @@ dependencies {
 
 jar {
     manifest.attributes([
-            'MixinConfigs': 'finery.mixins.json'
+            'MixinConfigs': 'finery.mixins.json',
+            'Implementation-Title': 'Finery',
+            'Implementation-Version': project.version
     ])
 }
