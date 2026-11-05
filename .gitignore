@@ -29,3 +29,13 @@ publishing/_preview_*
 secrets/
 *.token
 .env
+
+# Local porting workspace (mapping files are licensed; never redistribute)
+_port/mappings/
+_port/yarn-src/
+_port/resolved-1.20.1-src/
+_port/mojmap-src/
+_port/mojmap-src2/
+_port/port-src/
+_port/member_map.json
+_port/methods.json
