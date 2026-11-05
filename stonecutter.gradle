@@ -1,0 +1,7 @@
+plugins {
+    id 'dev.kikugie.stonecutter'
+}
+
+// The active version determines the state of //? comments in the shared src/.
+// The shared source is kept in the 1.21.1 state (the original mod version).
+stonecutter.active '1.21.11'

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "finery",
+  "version": "${version}",
+  "name": "Finery",
+  "description": "Capes, wings, hats, horns and necklaces: 35 unique 3D cosmetics with cloth physics, RPG abilities and per-skin fitting.",
+  "authors": [
+    "Developer"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/finery/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.developer.finery.Finery"
+    ],
+    "client": [
+      "net.developer.finery.client.FineryClient"
+    ]
+  },
+  "mixins": [
+    "finery.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=17",
+    "fabric-api": "*",
+    "accessories": "*"
+  },
+  "suggests": {},
+  "custom": {
+    "modmenu": {
+      "links": {}
+    }
+  }
+}

@@ -1,0 +1,157 @@
+plugins {
+    id 'net.fabricmc.fabric-loom-remap' version '1.15.5'
+    id 'maven-publish'
+}
+
+version = "${property('mod_version')}+${sc.current.version}"
+group = property('maven_group')
+
+def yarnMappings = property('yarn_mappings')
+def loaderVersion = property('loader_version')
+def fabricVersion = property('fabric_version')
+def accessoriesVersion = property('accessories_version')
+def requiredJava = sc.current.parsed.matches('>=1.20.6') ? 21 : 17
+
+base {
+    archivesName = property('archives_base_name')
+}
+
+repositories {
+    // Wisp Forest Maven (Accessories API)
+    maven {
+        name = 'WispForest'
+        url = 'https://maven.wispforest.io/releases'
+    }
+    // Su5ed Maven (transitive deps for Accessories)
+    maven {
+        name = 'Su5ed'
+        url = 'https://maven.su5ed.dev/releases'
+    }
+    // Shedaniel Maven (cloth-config, transitive dep of Accessories)
+    maven {
+        name = 'Shedaniel'
+        url = 'https://maven.shedaniel.me/'
+    }
+    // JitPack (kdl4j, transitive dep of owo-lib 0.13.x on 1.21.11)
+    maven {
+        name = 'JitPack'
+        url = 'https://jitpack.io'
+    }
+    mavenCentral()
+}
+
+loom {
+    // Split client/server source sets for clean separation
+    splitEnvironmentSourceSets()
+
+    mods {
+        finery {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+
+    runs {
+        client {
+            // offline dev username (override with -Pmc_username=Name)
+            programArgs '--username', (project.findProperty('mc_username') ?: 'VUO_') as String
+            // QA: -Pquickplay=NewWorld boots straight into that save
+            if (project.hasProperty('quickplay')) {
+                programArgs '--quickPlaySingleplayer', project.property('quickplay') as String
+            }
+        }
+    }
+}
+
+dependencies {
+    // Minecraft + Fabric Loader
+    minecraft "com.mojang:minecraft:${sc.current.version}"
+    mappings "net.fabricmc:yarn:${yarnMappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${loaderVersion}"
+
+    // Fabric API
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
+
+    // Accessories API
+    // Official Maven has no 1.21.11 build; use the community Fabric port jar
+    // (CurseForge project 1608800, file 8424985) for that version only.
+    if (sc.current.parsed.matches('>=1.21.11')) {
+        modImplementation files(rootProject.file('libs/accessories-fabric-1.4.3+1.21.11.jar'))
+    } else if (sc.current.parsed.matches('=1.21.3')) {
+        // 1.2.4 is published on Modrinth only, not on the Wisp maven
+        modImplementation files(rootProject.file('libs/accessories-fabric-1.2.4-beta+1.21.2.jar'))
+    } else {
+        modImplementation "io.wispforest:accessories-fabric:${accessoriesVersion}"
+    }
+
+    // accessories 1.4.3 declares owo-lib runtime-scoped, but its classes leak into
+    // the compile API (BaseContainer.onContainerChange), so it must be on the
+    // compile classpath for 1.21.10+. owo 0.12.x is built for 1.21.9/1.21.10 only,
+    // 1.21.11 needs the 0.13.x line or its NbtCompound mixin fails at boot.
+    if (sc.current.parsed.matches('>=1.21.11')) {
+        modImplementation "io.wispforest:owo-lib:0.13.0+1.21.11"
+    } else if (sc.current.parsed.matches('>=1.21.10')) {
+        modImplementation "io.wispforest:owo-lib:0.12.24+1.21.9"
+    } else if (sc.current.parsed.matches('>=1.21.3 <1.21.5')) {
+        modImplementation "io.wispforest:owo-lib:${property('owo_version')}"
+    }
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'minecraft_version', sc.current.version
+    inputs.property 'loader_version', loaderVersion
+
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version,
+                'minecraft_version': sc.current.version,
+                'loader_version': loaderVersion
+    }
+
+    // 1.21.10 switched recipe ingredients to plain ids ({"item": "x"} -> "x",
+    // {"tag": "x"} -> "#x"). Rewrite only the packaged output so the shared
+    // sources stay valid for 1.20.1/1.21.1.
+    if (sc.current.parsed.matches('>=1.21.10')) {
+        doLast {
+            fileTree(destinationDir) { include 'data/finery/recipe/*.json' }.each { recipe ->
+                def text = recipe.getText('UTF-8')
+                text = text.replaceAll(/\{\s*"item"\s*:\s*"([^"]+)"\s*\}/, '"$1"')
+                text = text.replaceAll(/\{\s*"tag"\s*:\s*"([^"]+)"\s*\}/, '"#$1"')
+                recipe.setText(text, 'UTF-8')
+            }
+        }
+    }
+
+    // 1.20.1 still uses plural data directories and {"item": ...} results.
+    if (sc.current.parsed.matches('<1.21')) {
+        doLast {
+            def recipesDir = new File(destinationDir, 'data/finery/recipe')
+            def recipesPlural = new File(destinationDir, 'data/finery/recipes')
+            if (recipesDir.exists()) {
+                recipesDir.listFiles()?.each { File recipe ->
+                    recipe.setText(recipe.getText('UTF-8').replace('"id":', '"item":'), 'UTF-8')
+                }
+                if (!recipesPlural.exists()) recipesDir.renameTo(recipesPlural)
+            }
+            def tagsDir = new File(destinationDir, 'data/accessories/tags/item')
+            def tagsPlural = new File(destinationDir, 'data/accessories/tags/items')
+            if (tagsDir.exists() && !tagsPlural.exists()) tagsDir.renameTo(tagsPlural)
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = requiredJava
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.toVersion(requiredJava)
+    targetCompatibility = JavaVersion.toVersion(requiredJava)
+}
+
+jar {
+    from('LICENSE') {
+        rename { "${it}_${base.archivesName.get()}" }
+    }
+}

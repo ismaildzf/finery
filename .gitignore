@@ -1,0 +1,31 @@
+# Gradle
+.gradle/
+build/
+versions/*/build/
+versions/*/.gradle/
+
+# Dev run directories (worlds, logs, local skin, adjust offsets)
+run/
+versions/*/run/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local scratch
+dev-backups/
+*.log
+publishing/_debug*
+publishing/_working_tex.png
+publishing/_preview_*
+secrets/
+*.token
+.env

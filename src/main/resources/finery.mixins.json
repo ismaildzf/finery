@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "package": "net.developer.finery.client.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "client": [
+        "LocalSkinMixin",
+        "VanillaCapeSuppressionMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

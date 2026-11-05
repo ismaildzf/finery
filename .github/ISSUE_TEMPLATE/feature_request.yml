@@ -1,0 +1,36 @@
+name: Cosmetic or feature request
+description: Suggest a new piece, a redesign, a perk change or a compatibility fix.
+title: "[Request]: "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is it about
+      options:
+        - Visual redesign of an existing piece
+        - New cosmetic
+        - Perk / balance
+        - Compatibility with another mod
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: piece
+    attributes:
+      label: Which piece
+      placeholder: "e.g. Crown, Royal Scarf, Angel Wings"
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you want
+      description: Describe the shape, colours, size or behaviour. A reference image helps.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters
+      description: What is wrong with the current version, or what it would enable.
+    validations:
+      required: false

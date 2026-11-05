@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": ["WWW", "WMW", " W "],
+  "key": {
+    "W": { "item": "minecraft:black_wool" },
+    "M": { "item": "minecraft:ender_pearl" }
+  },
+  "result": { "count": 1, "id": "finery:void_cape" }
+}

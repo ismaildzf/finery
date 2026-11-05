@@ -1,0 +1,17 @@
+{
+    "replace": false,
+    "values": [
+        "finery:crimson_cape",
+        "finery:azure_cape",
+        "finery:emerald_cape",
+        "finery:void_cape",
+        "finery:warden_cape",
+        "finery:dragon_cape",
+        "finery:pirate_cape",
+        "finery:pharaoh_cape",
+        "finery:totem_cape",
+        "finery:enchanter_cape",
+        "finery:breeze_cape",
+        "finery:wither_cape"
+    ]
+}

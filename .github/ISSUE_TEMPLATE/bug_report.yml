@@ -1,0 +1,68 @@
+name: Bug report
+description: Something clips, floats, refuses to render, crashes, or behaves wrong.
+title: "[Bug]: "
+labels: ["bug", "needs-info"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. The more detail here, the faster it gets fixed.
+  - type: input
+    id: mod-version
+    attributes:
+      label: Mod version
+      description: The jar you installed, e.g. finery-1.0.0+1.21.1.jar
+    validations:
+      required: true
+  - type: dropdown
+    id: mc-version
+    attributes:
+      label: Minecraft version
+      options:
+        - "1.20.1"
+        - "1.21"
+        - "1.21.1"
+        - "1.21.3"
+        - "1.21.4"
+        - "1.21.10"
+        - "1.21.11"
+    validations:
+      required: true
+  - type: input
+    id: loader
+    attributes:
+      label: Loader and Fabric API version
+      placeholder: "Fabric Loader 0.16.14, Fabric API 0.116.0"
+    validations:
+      required: true
+  - type: textarea
+    id: mods
+    attributes:
+      label: Other mods installed
+      description: Paste the mod list, or say "only Finery" if that is the case.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Which cosmetic, which slot, and what it looks like.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Wear the ...
+        2. Press K and ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log or screenshot
+      description: Drag the file here. latest.log from the run folder is ideal.
+    validations:
+      required: false

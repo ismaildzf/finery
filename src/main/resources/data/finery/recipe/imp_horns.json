@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": ["B B", " C "],
+  "key": {
+    "B": { "item": "minecraft:bone" },
+    "C": { "item": "minecraft:coal" }
+  },
+  "result": { "count": 1, "id": "finery:imp_horns" }
+}
