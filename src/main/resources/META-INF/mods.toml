@@ -8,7 +8,8 @@ modId="finery"
 version="${file.jarVersion}"
 displayName="Finery"
 authors="ismaildzf"
-description='''35 cosmetics for NeoForge 1.20.1.'''
+credits="Cloth behaviour takes cues from WaveyCapes by tr7zw (MIT)."
+description='''35 wearables for NeoForge 1.20.1: capes, wings, hats, horns and necklaces as real 3D models. Requires Curios.'''
 
 [[dependencies.finery]]
     modId="forge"

@@ -1,6 +1,11 @@
+
 # Finery
 
-Thirty-five wearables for **Fabric** — capes, wings, hats, horns and necklaces — built as real 3D geometry, each with a small perk attached.
+> **NeoForge 1.20.1 build (branch `neoforge`).** Requires NeoForge `47.1.106` and Curios `5.14.1+1.20.1`.
+> Build with JDK 17: `./gradlew build` (ForgeGradle 6). The jar lands in `build/libs/finery-1.0.0-neoforge.jar`.
+> The Fabric jars remain in the `main` branch; this branch replaces Stonecutter with the NeoForge build.
+
+Thirty-five wearables for **Fabric and NeoForge** — capes, wings, hats, horns and necklaces — built as real 3D geometry, each with a small perk attached.
 
 [Modrinth](https://modrinth.com/mod/finery) · [CurseForge](https://www.curseforge.com/minecraft/mc-mods/finery) · [Issues](https://github.com/ismaildzf/finery/issues)
 
