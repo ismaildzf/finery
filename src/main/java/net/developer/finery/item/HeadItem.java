@@ -107,7 +107,8 @@ public class HeadItem extends Item implements ICurioItem {
 
     @Override
     public boolean canEquip(SlotContext reference, ItemStack stack) {
-        return slotName.equals(reference.identifier());
+        String expected = ProviderRegistry.slotName("face".equals(slotName) ? SlotKind.FACE : SlotKind.HAT);
+        return expected.equals(reference.identifier());
     }
 
     @Override
