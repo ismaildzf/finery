@@ -8,6 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import java.lang.reflect.Field;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -52,5 +56,47 @@ public final class SelfTest {
 
         Finery.LOGGER.info("[Selftest] loot pools injected at table load: {} {}", ModLoot.injections,
                 ModLoot.injections >= 20 ? "PASS" : "FAIL");
+
+        checkLoot(server, BuiltInLootTables.ANCIENT_CITY, ModItems.WARDEN_CAPE);
+        checkLoot(server, BuiltInLootTables.WOODLAND_MANSION, ModItems.CROWN);
+        checkLoot(server, BuiltInLootTables.END_CITY_TREASURE, ModItems.DRAGON_CAPE);
+    }
+
+    private static void checkLoot(MinecraftServer server, ResourceLocation tableId, Item expected) {
+        LootTable table = server.getLootData().getLootTable(tableId);
+        boolean found = false;
+        try {
+            java.util.List<?> pools = (java.util.List<?>) fieldByType(LootTable.class, java.util.List.class).get(table);
+            for (Object pool : pools) {
+                Object[] entries = (Object[]) fieldByType(pool.getClass(), net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer[].class).get(pool);
+                for (Object entry : entries) {
+                    if (entry instanceof LootItem) {
+                        if (fieldByType(LootItem.class, Item.class).get(entry) == expected) {
+                            found = true;
+                        }
+                    }
+                }
+            }
+        } catch (ReflectiveOperationException error) {
+            Finery.LOGGER.warn("[Selftest] loot reflection failed for {}: {}", tableId, error.toString());
+        }
+        Finery.LOGGER.info("[Selftest] loot {} contains {}: {} {}", tableId,
+                itemsName(expected), found, found ? "PASS" : "FAIL");
+    }
+
+    private static Field fieldByType(Class<?> owner, Class<?> type) throws NoSuchFieldException {
+        for (Class<?> current = owner; current != null; current = current.getSuperclass()) {
+            for (Field field : current.getDeclaredFields()) {
+                if (type.isAssignableFrom(field.getType())) {
+                    field.setAccessible(true);
+                    return field;
+                }
+            }
+        }
+        throw new NoSuchFieldException(owner.getName() + " field of type " + type.getName());
+    }
+
+    private static String itemsName(Item item) {
+        return net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item).toString();
     }
 }
