@@ -163,10 +163,7 @@ public class CapeAccessoryRenderer extends net.developer.finery.client.renderer.
         ModelPart body = playerModel.body;
         body.translateAndRotate(matrices);
 
-        // chestplate offset compensation (same as before)
-        if (!chestItem.isEmpty()) {
-            matrices.translate(0.0D, -0.053125D, 0.06875D);
-        }
+
 
         // pass 1: capture one matrix per slice from the rope simulation
         for (int part = 0; part < PARTS; part++) {

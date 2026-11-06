@@ -46,3 +46,7 @@ run/
 run-server/
 *.log
 _port/
+
+# Python tooling
+__pycache__/
+*.pyc

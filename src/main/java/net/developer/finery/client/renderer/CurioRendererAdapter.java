@@ -15,11 +15,18 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
  * to the renderer.
  */
 public abstract class CurioRendererAdapter implements ICurioRenderer {
+    private static final java.util.Set<net.minecraft.world.item.Item> LOGGED =
+            java.util.Collections.newSetFromMap(new java.util.concurrent.ConcurrentHashMap<>());
+
     @Override
     public <T extends LivingEntity, M extends EntityModel<T>> void render(
             ItemStack stack, SlotContext context, PoseStack poseStack, RenderLayerParent<T, M> parent,
             MultiBufferSource buffer, int light, float limbSwing, float limbSwingAmount,
             float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (System.getProperty("finery.autotest") != null && LOGGED.add(stack.getItem())) {
+            net.developer.finery.Finery.LOGGER.info("[Autotest] render call {} slot={} entity={} buffer={}",
+                    stack.getItem(), context.identifier(), context.entity(), buffer.getClass().getName());
+        }
         renderCurio(stack, context, poseStack, parent.getModel(), buffer, light,
                 limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
     }

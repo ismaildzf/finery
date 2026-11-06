@@ -21,4 +21,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: finery-neoforge
-          path: build/libs/finery-*-neoforge.jar
+          path: build/libs/finery-*.jar

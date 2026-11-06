@@ -17,6 +17,7 @@ public final class EntityLayerFlush {
     }
 
     public static void finish(VertexConsumer buffer) {
+        buffer.endVertex();
     }
 
     public static void clearToast(MultiBufferSource provider, RenderType layer) {

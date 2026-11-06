@@ -319,7 +319,7 @@ public class CosmeticAdjustScreen extends Screen {
         //? if >=1.21 {
         /*InventoryScreen.drawEntity(context, x1, y1, x2, y2, 50, 0.0625F, mouseX, mouseY, this.minecraft.player);
         *///?} else {
-        InventoryScreen.renderEntityInInventoryFollowsMouse(context, centerX, centerY, 50, mouseX, mouseY, this.minecraft.player);
+        InventoryScreen.renderEntityInInventoryFollowsMouse(context, centerX, centerY + 30, 30, mouseX, mouseY, this.minecraft.player);
         //?}
     }
 
