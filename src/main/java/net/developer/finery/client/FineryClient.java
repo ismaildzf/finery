@@ -84,8 +84,14 @@ public final class FineryClient {
         @SubscribeEvent
         static void screenInit(ScreenEvent.Init.Post event) {
             if (event.getScreen() instanceof PauseScreen) {
+                int lowest = event.getScreen().height / 4 + 96;
+                for (net.minecraft.client.gui.components.events.GuiEventListener listener : event.getListenersList()) {
+                    if (listener instanceof Button button) {
+                        lowest = Math.max(lowest, button.getY() + button.getHeight());
+                    }
+                }
                 int x = event.getScreen().width / 2 - 100;
-                int y = event.getScreen().height / 4 + 120;
+                int y = Math.min(lowest + 4, event.getScreen().height - 24);
                 event.addListener(Button.builder(Component.translatable("finery.menu.adjust"),
                                 button -> Minecraft.getInstance().setScreen(new CosmeticAdjustScreen(event.getScreen())))
                         .bounds(x, y, 200, 20)

@@ -11,7 +11,8 @@ import sys
 import zipfile
 
 MC = os.path.join(os.environ["APPDATA"], ".minecraft")
-JAVA = r"C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot\bin\java.exe"
+JAVA = os.environ.get(
+    "FINERY_JAVA", r"C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot\bin\java.exe")
 
 
 def allowed(rules):
@@ -121,7 +122,14 @@ def main():
             jvm.append(render(item))
     if not any("java.library.path" in arg for arg in jvm):
         jvm.append("-Djava.library.path=" + natives)
-    jvm.extend(["-Xmx2G", "-Dfinery.autotest=true", "-Dfile.encoding=UTF-8"])
+    if os.environ.get("FINERY_EXTRA_JVM"):
+        jvm.extend(os.environ["FINERY_EXTRA_JVM"].split())
+    if os.environ.get("FINERY_CAPEDEBUG"):
+        jvm.append("-Dfinery.capedebug=true")
+    jvm.append("-Xmx2G")
+    if not os.environ.get("FINERY_NO_AUTOTEST"):
+        jvm.append("-Dfinery.autotest=true")
+    jvm.append("-Dfile.encoding=UTF-8")
 
     game = []
     for item in version["arguments"]["game"]:
