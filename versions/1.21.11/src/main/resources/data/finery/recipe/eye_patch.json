@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "LL",
+    "SL"
+  ],
+  "key": {
+    "L": "minecraft:leather",
+    "S": "minecraft:string"
+  },
+  "result": {
+    "count": 1,
+    "id": "finery:eye_patch"
+  }
+}

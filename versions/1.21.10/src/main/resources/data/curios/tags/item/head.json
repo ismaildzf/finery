@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "finery:wizard_hat",
+    "finery:headband",
+    "finery:crown",
+    "finery:dragon_horns",
+    "finery:ram_horns",
+    "finery:demon_horn",
+    "finery:imp_horns"
+  ]
+}

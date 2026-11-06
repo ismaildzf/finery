@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.developer.finery.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "VanillaCapeSuppressionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
