@@ -1,5 +1,7 @@
 package net.developer.finery.item;
 
+import net.developer.finery.FineryConfig;
+
 import net.developer.finery.provider.ProviderRegistry;
 import net.developer.finery.provider.SlotKind;
 import top.theillusivec4.curios.api.SlotContext;
@@ -87,6 +89,9 @@ public class WingItem extends Item implements ICurioItem {
 
     @Override
     public void curioTick(SlotContext reference, ItemStack stack) {
+        if (!FineryConfig.get().abilityEnabled(stack, FineryConfig.Group.WING)) {
+            return;
+        }
         if (reference.entity() != null) {
             ability.tick(reference.entity());
         }
@@ -96,6 +101,9 @@ public class WingItem extends Item implements ICurioItem {
     public boolean canEquip(SlotContext reference, ItemStack stack) {
         if (!ProviderRegistry.slotName(SlotKind.WINGS).equals(reference.identifier())) {
             return false;
+        }
+        if (!FineryConfig.get().exclusiveCapeAndWings) {
+            return true;
         }
         LivingEntity entity = reference.entity();
         if (entity == null) {

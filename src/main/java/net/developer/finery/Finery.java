@@ -23,6 +23,8 @@ public class Finery {
             DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MOD_ID);
 
     public Finery() {
+        FineryConfig.load();
+
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModItems.register(modBus);
         RECIPES.register(modBus);

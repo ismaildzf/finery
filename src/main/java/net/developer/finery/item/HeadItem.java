@@ -1,5 +1,7 @@
 package net.developer.finery.item;
 
+import net.developer.finery.FineryConfig;
+
 import net.developer.finery.provider.ProviderRegistry;
 import net.developer.finery.provider.SlotKind;
 import top.theillusivec4.curios.api.SlotContext;
@@ -86,6 +88,9 @@ public class HeadItem extends Item implements ICurioItem {
 
     @Override
     public void onEquip(SlotContext reference, ItemStack stack, ItemStack previous) {
+        if (!FineryConfig.get().abilityEnabled(stack, FineryConfig.Group.HEAD)) {
+            return;
+        }
         if (reference.entity() != null) {
             ability.onEquip(reference.entity());
         }
@@ -100,6 +105,9 @@ public class HeadItem extends Item implements ICurioItem {
 
     @Override
     public void curioTick(SlotContext reference, ItemStack stack) {
+        if (!FineryConfig.get().abilityEnabled(stack, FineryConfig.Group.HEAD)) {
+            return;
+        }
         if (reference.entity() != null) {
             ability.tick(reference.entity());
         }

@@ -1,6 +1,7 @@
 package net.developer.finery.registry;
 
 import net.developer.finery.Finery;
+import net.developer.finery.FineryConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -22,6 +23,9 @@ public final class ModLoot {
 
     @SubscribeEvent
     public static void onLootTableLoad(LootTableLoadEvent event) {
+        if (!FineryConfig.get().lootEnabled) {
+            return;
+        }
         ResourceLocation id = event.getName();
         if (id.equals(BuiltInLootTables.ANCIENT_CITY)) {
             add(event, ModItems.WARDEN_CAPE, 0.04F);
@@ -68,6 +72,10 @@ public final class ModLoot {
 
     private static void add(LootTableLoadEvent event, Item item, float chance) {
         if (item == null) {
+            return;
+        }
+        chance = FineryConfig.get().lootChance(chance);
+        if (chance <= 0.0F) {
             return;
         }
         LootPool pool = LootPool.lootPool()

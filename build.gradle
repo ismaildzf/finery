@@ -4,7 +4,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.38'
 }
 
-version = '1.0.1-neoforge+1.20.1'
+version = '1.0.3-neoforge+1.20.1'
 group = 'net.developer'
 
 base {

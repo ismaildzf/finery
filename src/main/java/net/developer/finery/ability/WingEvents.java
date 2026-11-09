@@ -1,5 +1,7 @@
 package net.developer.finery.ability;
 
+import net.developer.finery.FineryConfig;
+
 import net.developer.finery.Finery;
 import net.developer.finery.provider.ProviderRegistry;
 import net.developer.finery.registry.ModItems;
@@ -48,6 +50,9 @@ public final class WingEvents {
     public static void onAttack(LivingAttackEvent event) {
         LivingEntity entity = event.getEntity();
         if (!(entity instanceof ServerPlayer player) || event.getAmount() <= 0.0F) {
+            return;
+        }
+        if (!FineryConfig.get().wingDamageEventsEnabled()) {
             return;
         }
         DamageSource source = event.getSource();
