@@ -1,5 +1,6 @@
 package net.developer.finery.item;
 
+import net.developer.finery.FineryConfig;
 //? if >=1.21.10 {
 import io.wispforest.accessories.api.core.AccessoryItem;
 //?} else {
@@ -75,6 +76,9 @@ public class NeckItem extends AccessoryItem {
 
     @Override
     public void onEquip(ItemStack stack, SlotReference reference) {
+        if (!FineryConfig.get().abilityEnabled(stack, FineryConfig.Group.NECK)) {
+            return;
+        }
         if (reference.entity() != null) {
             ability.onEquip(reference.entity());
         }
@@ -89,6 +93,9 @@ public class NeckItem extends AccessoryItem {
 
     @Override
     public void tick(ItemStack stack, SlotReference reference) {
+        if (!FineryConfig.get().abilityEnabled(stack, FineryConfig.Group.NECK)) {
+            return;
+        }
         if (reference.entity() != null) {
             ability.tick(reference.entity());
         }
@@ -132,7 +139,7 @@ public class NeckItem extends AccessoryItem {
     private void addTooltip(ItemStack stack, List<Text> tooltip) {
         tooltip.add(Text.translatable(rarity.tooltipKey())
                 .formatted(rarity.color(), Formatting.BOLD)
-                .append(Text.literal(" • ").formatted(Formatting.DARK_GRAY))
+                .append(Text.literal(" â€¢ ").formatted(Formatting.DARK_GRAY))
                 .append(Text.translatable("item.finery.tooltip.neck").formatted(Formatting.GRAY)));
         tooltip.add(Text.translatable("item.finery.tooltip.ability")
                 .formatted(Formatting.GOLD, Formatting.BOLD)
@@ -153,3 +160,5 @@ public class NeckItem extends AccessoryItem {
     protected void addExtraTooltip(ItemStack stack, List<Text> tooltip) {
     }
 }
+
+

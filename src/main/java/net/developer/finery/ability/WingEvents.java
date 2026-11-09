@@ -1,6 +1,7 @@
 package net.developer.finery.ability;
 
 import io.wispforest.accessories.api.AccessoriesCapability;
+import net.developer.finery.FineryConfig;
 import net.developer.finery.registry.ModItems;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.entity.LivingEntity;
@@ -49,6 +50,9 @@ public final class WingEvents {
 
     private static boolean allowDamage(LivingEntity entity, DamageSource source, float amount) {
         if (!(entity instanceof ServerPlayerEntity player) || amount <= 0.0F) {
+            return true;
+        }
+        if (!FineryConfig.get().wingDamageEventsEnabled()) {
             return true;
         }
         if (source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
@@ -138,3 +142,4 @@ public final class WingEvents {
     }
     //?}
 }
+

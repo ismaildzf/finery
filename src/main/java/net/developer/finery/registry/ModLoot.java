@@ -1,6 +1,7 @@
 package net.developer.finery.registry;
 
 import net.developer.finery.Finery;
+import net.developer.finery.FineryConfig;
 //? if >=1.21 {
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 //?} else {
@@ -24,6 +25,10 @@ public final class ModLoot {
     }
 
     public static void register() {
+        if (!FineryConfig.get().lootEnabled) {
+            Finery.LOGGER.info("[Finery] Loot injection disabled by config.");
+            return;
+        }
         //? if >=1.21 {
         LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
             if (!source.isBuiltin()) {
@@ -93,9 +98,14 @@ public final class ModLoot {
     }
 
     private static void add(LootTable.Builder table, Item item, float chance) {
+        float adjusted = FineryConfig.get().lootChance(chance);
+        if (adjusted <= 0.0F) {
+            return;
+        }
         table.pool(LootPool.builder()
                 .rolls(ConstantLootNumberProvider.create(1.0F))
-                .conditionally(RandomChanceLootCondition.builder(chance))
+                .conditionally(RandomChanceLootCondition.builder(adjusted))
                 .with(ItemEntry.builder(item)));
     }
 }
+

@@ -38,6 +38,9 @@ public class Finery implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("[Finery] Initializing Finery mod...");
 
+        // config/finery.json — read before anything registers loot or behaviours
+        FineryConfig.load();
+
         // Register all custom items (capes)
         ModItems.register();
 

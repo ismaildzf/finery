@@ -1,5 +1,6 @@
 package net.developer.finery.item;
 
+import net.developer.finery.FineryConfig;
 import io.wispforest.accessories.api.AccessoriesCapability;
 //? if >=1.21.10 {
 import io.wispforest.accessories.api.core.AccessoryItem;
@@ -90,7 +91,7 @@ public class CapeItem extends AccessoryItem {
         return capeTexture;
     }
 
-    // ── Accessory Interface Implementation ──────────────────────────────
+    // â”€â”€ Accessory Interface Implementation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @Override
     public void onEquip(ItemStack stack, SlotReference reference) {
@@ -104,6 +105,9 @@ public class CapeItem extends AccessoryItem {
 
     @Override
     public void tick(ItemStack stack, SlotReference reference) {
+        if (!FineryConfig.get().abilityEnabled(stack, FineryConfig.Group.CAPE)) {
+            return;
+        }
         if (reference.entity() != null) {
             ability.tick(reference.entity());
         }
@@ -113,6 +117,9 @@ public class CapeItem extends AccessoryItem {
     public boolean canEquip(ItemStack stack, SlotReference reference) {
         if (!reference.slotName().equals("cape")) {
             return false;
+        }
+        if (!FineryConfig.get().exclusiveCapeAndWings) {
+            return true;
         }
         LivingEntity entity = reference.entity();
         if (entity == null) {
@@ -135,7 +142,7 @@ public class CapeItem extends AccessoryItem {
         return true;
     }
 
-    // ── Display ─────────────────────────────────────────────────────────
+    // â”€â”€ Display â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @Override
     public Text getName(ItemStack stack) {
@@ -165,7 +172,7 @@ public class CapeItem extends AccessoryItem {
     private void addTooltip(ItemStack stack, List<Text> tooltip) {
         tooltip.add(Text.translatable(rarity.tooltipKey())
                 .formatted(rarity.color(), Formatting.BOLD)
-                .append(Text.literal(" • ").formatted(Formatting.DARK_GRAY))
+                .append(Text.literal(" â€¢ ").formatted(Formatting.DARK_GRAY))
                 .append(Text.translatable("item.finery.tooltip.cape").formatted(Formatting.GRAY)));
         tooltip.add(Text.translatable("item.finery.tooltip.ability")
                 .formatted(Formatting.GOLD, Formatting.BOLD)
@@ -183,3 +190,5 @@ public class CapeItem extends AccessoryItem {
                 .formatted(Formatting.DARK_GRAY, Formatting.ITALIC));
     }
 }
+
+
